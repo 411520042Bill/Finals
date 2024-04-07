@@ -54,6 +54,22 @@ layout = [
     [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
 ]
 
+# Function to make impenetrable object
+def make_impenetrable(layout, immutable_nums):
+    modified_layout = []
+    for row in layout:
+        modified_row = []
+        for num in row:
+            if num in immutable_nums:
+                modified_row.append((num,))
+            else:
+                modified_row.append(num)
+        modified_layout.append(modified_row)
+    return modified_layout
+
+immutable_nums = {3}  # Numbers to make immutable
+layout = make_immutable(layout, immutable_nums) #call the function
+
 # Function to draw the restaurant map
 def draw_map():
     tile_size = white_tile.get_width()  # Assuming each tile has the same size

@@ -1,4 +1,6 @@
 import pygame
+import random
+import math
 
 # Initialize Pygame
 pygame.init()
@@ -20,6 +22,7 @@ GREY = (200, 200, 200)
 white_tile = pygame.image.load('_white_tile1.jpg')  # Replace with your first floor tile image
 lpink_tile = pygame.image.load('light_pink_tile1.jpg')  # Replace with your second floor tile image
 dpink_tile = pygame.image.load('dark_pink_tile1.jpg')  # Replace with your third floor tile image
+monster_image = pygame.image.load('monster.jpg')
 # wall_tile = pygame.image.load('path_to_wall_tile.png')  # Replace with your wall tile image
 # table_tile = pygame.image.load('path_to_table_tile.png')  # Replace with your table tile image
 # ... Load other tiles as needed
@@ -68,7 +71,7 @@ def make_impenetrable(layout, immutable_nums):
     return modified_layout
 
 immutable_nums = {3}  # Numbers to make immutable
-layout = make_immutable(layout, immutable_nums) #call the function
+#layout = make_immutable(layout, immutable_nums) #call the function
 
 # Function to draw the restaurant map
 def draw_map():
@@ -87,6 +90,41 @@ def draw_map():
             #     window.blit(table_tile, (x * tile_size, y * tile_size))
             # Add more conditions for other tiles
 
+# Monster class
+class Monster:
+    
+    def __init__(monster, x, y, size):
+        monster.x = x
+        monster.y = y
+        monster.size = size 
+        monster.frames_count = 0 
+        monster.dx, monster.dy = 0, 0
+        monster.angle = random.uniform(0, 2 * math.pi)
+
+    def move(monster):
+        speed = 0.03  # Fixed speed
+        # directions_dx = [-0.04, -0.03, -0.02, -0.01, 0, 0.01, 0.02, 0.03, 0.04]  # right, left
+        # directions_dy = [-0.04, -0.03, -0.02, -0.01, 0, 0.01, 0.02, 0.03, 0.04]  # up, down
+        angle_range = math.pi / 2  # The range of angle change
+        if monster.frames_count % 32 == 0:  # Number of frames moving in the same direction
+            monster.angle += random.uniform(-angle_range, angle_range)  # Random angle within a small range
+            monster.dx = speed * math.cos(monster.angle)
+            monster.dy = speed * math.sin(monster.angle)
+        monster.x += monster.dx
+        monster.y += monster.dy
+        monster.frames_count += 1
+        
+    # draw the monster
+    def draw_monster(monster):
+        monster_image_scaled = pygame.transform.scale(monster_image, (monster.size, monster.size))  # Scale the monster image
+        window.blit(monster_image_scaled, (monster.x * monster.size, monster.y * monster.size))
+
+# Create a monster
+# To be modified: Random monster spawn point
+monster_size = 30
+monster = Monster(10, 10, monster_size)
+
+
 # Game loop
 running = True
 clock = pygame.time.Clock()
@@ -96,15 +134,22 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            
+    # Move the monster every 10 frames
+    monster.move()
 
     # Draw the map
     draw_map()
+    
+    # Draw the monster
+    monster.draw_monster()
 
     # Update the display
     pygame.display.flip()
 
     # Maintain the specified frames per second
     clock.tick(FPS)
+
 
 # Quit the game
 pygame.quit()

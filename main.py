@@ -23,6 +23,7 @@ white_tile = pygame.image.load('_white_tile1.jpg')  # Replace with your first fl
 lpink_tile = pygame.image.load('light_pink_tile1.jpg')  # Replace with your second floor tile image
 dpink_tile = pygame.image.load('dark_pink_tile1.jpg')  # Replace with your third floor tile image
 monster_image = pygame.image.load('monster.jpg')
+character_image = pygame.image.load('characterIlde.png')
 # wall_tile = pygame.image.load('path_to_wall_tile.png')  # Replace with your wall tile image
 # table_tile = pygame.image.load('path_to_table_tile.png')  # Replace with your table tile image
 # ... Load other tiles as needed
@@ -84,11 +85,38 @@ def draw_map():
                 window.blit(lpink_tile, (x * tile_size, y * tile_size))
             elif tile == 2:
                 window.blit(dpink_tile, (x * tile_size, y * tile_size))
+            '''
             # elif tile == 3:
             #     window.blit(wall_tile, (x * tile_size, y * tile_size))
             # elif tile == 4:
             #     window.blit(table_tile, (x * tile_size, y * tile_size))
             # Add more conditions for other tiles
+            '''
+
+class Charater:    
+    def __init__(self, x, y, speed=5, image_path=character_image):
+        self.x = x
+        self.y = y
+        self.speed = speed
+        self.image = pygame.image.load(image_path)  # Load the character image
+        self.size = self.image.get_size()
+    
+    def move(self, keys):
+        if keys[pygame.K_a]:
+            self.x -= self.speed
+        if keys[pygame.K_d]:
+            self.x += self.speed
+        if keys[pygame.K_w]:
+            self.y -= self.speed
+        if keys[pygame.K_s]:
+            self.y += self.speed
+    
+    def draw(self, screen):
+        screen.blit(self.image, (self.x, self.y))
+
+#Initialize and create the character
+characterSize = 40 
+character = Character(WINDOW_WIDTH // 2 - characterSize // 2, WINDOW_HEIGHT // 2 - characterSize // 2, image_path=character_image)
 
 # Monster class
 class Monster:

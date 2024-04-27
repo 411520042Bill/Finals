@@ -40,6 +40,14 @@ girl_walk_left_lu = pygame.transform.scale(girl_walk_left_lu, (walk_width, walk_
 girl_walk_left_ru = pygame.transform.scale(girl_walk_left_ru, (walk_width, walk_height))
 girl_walk_right_lu = pygame.transform.scale(girl_walk_right_lu, (walk_width, walk_height))
 girl_walk_right_ru = pygame.transform.scale(girl_walk_right_ru, (walk_width, walk_height))
+megaman_idle_left = pygame.image.load('megaman\megaman_idle_left.png')
+megaman_run_left_0 = pygame.image.load('megaman\megaman_run_left_0.png')
+megaman_run_left_1 = pygame.image.load('megaman\megaman_run_left_1.png')
+megaman_run_left_2 = pygame.image.load('megaman\megaman_run_left_2.png')
+megaman_idle_right = pygame.image.load('megaman\megaman_idle_right.png')
+megaman_run_right_0 = pygame.image.load('megaman\megaman_run_right_0.png')
+megaman_run_right_1 = pygame.image.load('megaman\megaman_run_right_1.png')
+megaman_run_right_2 = pygame.image.load('megaman\megaman_run_right_2.png')
 # character_image = pygame.transform.scale(girl_walk_left_lu, (walk_width, walk_height))
 
 # Define the layout of the area
@@ -91,15 +99,15 @@ class Character:
         self.y = y
         self.size = size
         self.speed = speed
-        self.image = standing_face_left  # Start facing left
+        self.image = megaman_idle_left  # Start facing left
         self.rect = self.image.get_rect(center=(x, y))
         self.last_update = pygame.time.get_ticks()
         self.frame_rate = 100  # Frame rate in milliseconds
         self.last_direction = 'left'  # Keep track of the last movement direction
 
         # Animation frames for left and right movements
-        self.left_frames = [girl_walk_left_lu, girl_walk_left_ru]
-        self.right_frames = [girl_walk_right_lu, girl_walk_right_ru]
+        self.left_frames = [megaman_run_left_0, megaman_run_left_1, megaman_run_left_2, megaman_run_left_1]
+        self.right_frames = [megaman_run_right_0, megaman_run_right_1, megaman_run_right_2, megaman_run_right_1]
         self.current_frame = 0
         self.walking = False
 
@@ -128,9 +136,9 @@ class Character:
         if not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
             # Set the image to the appropriate standing face when not moving
             if self.last_direction == 'left':
-                self.image = standing_face_left
+                self.image = megaman_idle_left
             else:
-                self.image = standing_face_right
+                self.image = megaman_idle_right
 
         # Update rect position
         self.rect.center = (self.x, self.y)
@@ -145,7 +153,7 @@ class Character:
         if now - self.last_update > self.frame_rate:
             self.last_update = now
             if self.walking:
-                self.current_frame = (self.current_frame + 1) % 2
+                self.current_frame = (self.current_frame + 1) % 4
 
     def draw(self):
         window.blit(self.image, self.rect.topleft)

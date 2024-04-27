@@ -23,12 +23,24 @@ white_tile = pygame.image.load('_white_tile1.jpg')
 lpink_tile = pygame.image.load('light_pink_tile1.jpg')
 dpink_tile = pygame.image.load('dark_pink_tile1.jpg')
 monster_image = pygame.image.load('monster.jpg')
-standing_face_left = pygame.image.load('girl\Girl_standing_left.png')
-standing_face_right = pygame.image.load('girl\Girl_standing_right.png')
+standing_face_left = pygame.image.load('girl\girl_left.png')
+standing_face_right = pygame.image.load('girl\girl_right.png')
 girl_walk_left_lu = pygame.image.load('girl\Girl left lu.png')
 girl_walk_left_ru = pygame.image.load('girl\Girl left ru.png')
 girl_walk_right_lu = pygame.image.load('girl\Girl right lu.png')
 girl_walk_right_ru = pygame.image.load('girl\Girl right ru.png')
+
+megaman_idle_left = pygame.image.load('megaman\megaman_idle_left.png')
+megaman_blink_left = pygame.image.load('megaman\megaman_blink_left.png')
+megaman_run_left_0 = pygame.image.load('megaman\megaman_run_left_0.png')
+megaman_run_left_1 = pygame.image.load('megaman\megaman_run_left_1.png')
+megaman_run_left_2 = pygame.image.load('megaman\megaman_run_left_2.png')
+
+megaman_idle_right = pygame.image.load('megaman\megaman_idle_right.png')
+megaman_blink_right = pygame.image.load('megaman\megaman_blink_right.png')
+megaman_run_right_0 = pygame.image.load('megaman\megaman_run_right_0.png')
+megaman_run_right_1 = pygame.image.load('megaman\megaman_run_right_1.png')
+megaman_run_right_2 = pygame.image.load('megaman\megaman_run_right_2.png')
 # Define new dimensions for the character image
 walk_width = 300  # Set the desired width
 walk_height = 150  # Set the desired height
@@ -40,14 +52,6 @@ girl_walk_left_lu = pygame.transform.scale(girl_walk_left_lu, (walk_width, walk_
 girl_walk_left_ru = pygame.transform.scale(girl_walk_left_ru, (walk_width, walk_height))
 girl_walk_right_lu = pygame.transform.scale(girl_walk_right_lu, (walk_width, walk_height))
 girl_walk_right_ru = pygame.transform.scale(girl_walk_right_ru, (walk_width, walk_height))
-megaman_idle_left = pygame.image.load('megaman\megaman_idle_left.png')
-megaman_run_left_0 = pygame.image.load('megaman\megaman_run_left_0.png')
-megaman_run_left_1 = pygame.image.load('megaman\megaman_run_left_1.png')
-megaman_run_left_2 = pygame.image.load('megaman\megaman_run_left_2.png')
-megaman_idle_right = pygame.image.load('megaman\megaman_idle_right.png')
-megaman_run_right_0 = pygame.image.load('megaman\megaman_run_right_0.png')
-megaman_run_right_1 = pygame.image.load('megaman\megaman_run_right_1.png')
-megaman_run_right_2 = pygame.image.load('megaman\megaman_run_right_2.png')
 # character_image = pygame.transform.scale(girl_walk_left_lu, (walk_width, walk_height))
 
 # Define the layout of the area
@@ -92,6 +96,8 @@ def draw_map():
                 window.blit(lpink_tile, (x * tile_size, y * tile_size))
             elif tile == 3:
                 window.blit(dpink_tile, (x * tile_size, y * tile_size))
+
+
 
 class Character:
     def __init__(self, x, y, speed=3, size=30):

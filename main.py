@@ -23,28 +23,37 @@ white_tile = pygame.image.load('_white_tile1.jpg')
 lpink_tile = pygame.image.load('light_pink_tile1.jpg')
 dpink_tile = pygame.image.load('dark_pink_tile1.jpg')
 monster_image = pygame.image.load('monster.jpg')
+girl_idle_left = pygame.image.load('girl\girl_idle_left.png')
+girl_idle_right = pygame.image.load('girl\girl_idle_right.png')
+
+girl_walk_left_1 = pygame.image.load('girl\girl_walk_left_1.png')
+girl_walk_left_2 = pygame.image.load('girl\girl_walk_left_2.png')
+girl_walk_right_1 = pygame.image.load('girl\girl_walk_right_1.png')
+girl_walk_right_2 = pygame.image.load('girl\girl_walk_right_2.png')
 
 megaman_idle_left = pygame.image.load('megaman\megaman_idle_left.png')
 megaman_blink_left = pygame.image.load('megaman\megaman_blink_left.png')
 megaman_run_left_0 = pygame.image.load('megaman\megaman_run_left_0.png')
 megaman_run_left_1 = pygame.image.load('megaman\megaman_run_left_1.png')
 megaman_run_left_2 = pygame.image.load('megaman\megaman_run_left_2.png')
+
 megaman_idle_right = pygame.image.load('megaman\megaman_idle_right.png')
 megaman_blink_right = pygame.image.load('megaman\megaman_blink_right.png')
 megaman_run_right_0 = pygame.image.load('megaman\megaman_run_right_0.png')
 megaman_run_right_1 = pygame.image.load('megaman\megaman_run_right_1.png')
 megaman_run_right_2 = pygame.image.load('megaman\megaman_run_right_2.png')
 # Define new dimensions for the character image
-walk_width = 300  # Set the desired width
-walk_height = 150  # Set the desired height
+walk_width = 216  # Set the desired width
+walk_height = 108  # Set the desired height
 char_width = 216  # Set the desired width
 char_height = 108  # Set the desired height
-standing_face_left = pygame.transform.scale(standing_face_left, (char_width, char_height))
-standing_face_right = pygame.transform.scale(standing_face_right, (char_width, char_height))
-girl_walk_left_lu = pygame.transform.scale(girl_walk_left_lu, (walk_width, walk_height))
-girl_walk_left_ru = pygame.transform.scale(girl_walk_left_ru, (walk_width, walk_height))
-girl_walk_right_lu = pygame.transform.scale(girl_walk_right_lu, (walk_width, walk_height))
-girl_walk_right_ru = pygame.transform.scale(girl_walk_right_ru, (walk_width, walk_height))
+girl_idle_left = pygame.transform.scale(girl_idle_left, (char_width, char_height))
+girl_idle_right = pygame.transform.scale(girl_idle_right, (char_width, char_height))
+
+girl_walk_left_1 = pygame.transform.scale(girl_walk_left_1, (walk_width, walk_height))
+girl_walk_left_2 = pygame.transform.scale(girl_walk_left_2, (walk_width, walk_height))
+girl_walk_right_1 = pygame.transform.scale(girl_walk_right_1, (walk_width, walk_height))
+girl_walk_right_2 = pygame.transform.scale(girl_walk_right_2, (walk_width, walk_height))
 # character_image = pygame.transform.scale(girl_walk_left_lu, (walk_width, walk_height))
 
 # Define the layout of the area
@@ -105,8 +114,8 @@ class Character:
         self.last_direction = 'left'  # Keep track of the last movement direction
 
         # Animation frames for left and right movements
-        self.left_frames = [megaman_run_left_0, megaman_run_left_1, megaman_run_left_2, megaman_run_left_1]
-        self.right_frames = [megaman_run_right_0, megaman_run_right_1, megaman_run_right_2, megaman_run_right_1]
+        self.left_frames = [girl_walk_left_1, girl_walk_left_2, girl_walk_left_1, girl_walk_left_2]
+        self.right_frames = [girl_walk_right_1, girl_walk_right_2, girl_walk_right_1, girl_walk_right_2]
         self.current_frame = 0
         self.walking = False
 
@@ -135,9 +144,9 @@ class Character:
         if not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
             # Set the image to the appropriate standing face when not moving
             if self.last_direction == 'left':
-                self.image = megaman_idle_left
+                self.image = girl_idle_left
             else:
-                self.image = megaman_idle_right
+                self.image = girl_idle_right
 
         # Update rect position
         self.rect.center = (self.x, self.y)

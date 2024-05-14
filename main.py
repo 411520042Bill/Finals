@@ -102,11 +102,12 @@ def draw_map():
 
 
 class Character:
-    def __init__(self, x, y, speed=3, size=30):
+    def __init__(self, x, y, speed=3, size=30, health=3):
         self.x = x
         self.y = y
         self.size = size
         self.speed = speed
+        self.health = health
         self.image = megaman_idle_left  # Start facing left
         self.rect = self.image.get_rect(center=(x, y))
         self.last_update = pygame.time.get_ticks()
@@ -155,6 +156,14 @@ class Character:
 
         # Update animation frames
         self.update_animation()
+   
+   
+    def take_damage(self, damage):
+        self.health -= damage
+        if(self.health<0):
+            character.die()
+
+
 
     def update_animation(self):
         now = pygame.time.get_ticks()
@@ -170,7 +179,7 @@ class Character:
 character = Character(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
 
 class Monster:
-    def __init__(self, x, y, size):
+    def __init__(self, x, y, size, attack_power):
         self.x = x
         self.y = y
         self.size = size
@@ -201,6 +210,9 @@ class Monster:
         self.x = max(0, min(self.x, WINDOW_WIDTH - self.size))
         self.y = max(0, min(self.y, WINDOW_HEIGHT - self.size))
 
+    def attack(self, character):
+        character.take_damage(self.attack_power)
+
     def draw(self):
         window.blit(self.image, (self.x, self.y))
 
@@ -221,11 +233,18 @@ while running:
     character.move(keys)
     character.draw()
 
+    distance = math.sqrt((monster.x - character.x) ** 2 + (monster.y - character.y) ** 2)
+
+    if distance < 10:
+        monster.attack(character)
+        print(f"Character health: {character.health}")
     for mon in monsters:
-        mon.move_towards_player(character, monsters)  # Pass the list of monsters
+        mon.move_towards_player(character, monsters)  
         mon.draw()
 
     pygame.display.flip()
     clock.tick(FPS)
+    if character.health <= 0:
+        running = false
 
 pygame.quit()

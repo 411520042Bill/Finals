@@ -16,32 +16,33 @@ pygame.display.set_caption("Pixel Style Game")
 
 # Define colors
 WHITE = (255, 255, 255)
-GREY = (200, 200, 200)
+BLACK = (0, 0, 0)
 
 # Load tile images
 white_tile = pygame.image.load('_white_tile1.jpg')
 lpink_tile = pygame.image.load('light_pink_tile1.jpg')
 dpink_tile = pygame.image.load('dark_pink_tile1.jpg')
 monster_image = pygame.image.load('monster.jpg')
-girl_idle_left = pygame.image.load('girl\girl_idle_left.png')
-girl_idle_right = pygame.image.load('girl\girl_idle_right.png')
+girl_idle_left = pygame.image.load('girl/girl_idle_left.png')
+girl_idle_right = pygame.image.load('girl/girl_idle_right.png')
 
-girl_walk_left_1 = pygame.image.load('girl\girl_walk_left_1.png')
-girl_walk_left_2 = pygame.image.load('girl\girl_walk_left_2.png')
-girl_walk_right_1 = pygame.image.load('girl\girl_walk_right_1.png')
-girl_walk_right_2 = pygame.image.load('girl\girl_walk_right_2.png')
+girl_walk_left_1 = pygame.image.load('girl/girl_walk_left_1.png')
+girl_walk_left_2 = pygame.image.load('girl/girl_walk_left_2.png')
+girl_walk_right_1 = pygame.image.load('girl/girl_walk_right_1.png')
+girl_walk_right_2 = pygame.image.load('girl/girl_walk_right_2.png')
 
-megaman_idle_left = pygame.image.load('megaman\megaman_idle_left.png')
-megaman_blink_left = pygame.image.load('megaman\megaman_blink_left.png')
-megaman_run_left_0 = pygame.image.load('megaman\megaman_run_left_0.png')
-megaman_run_left_1 = pygame.image.load('megaman\megaman_run_left_1.png')
-megaman_run_left_2 = pygame.image.load('megaman\megaman_run_left_2.png')
+megaman_idle_left = pygame.image.load('megaman/megaman_idle_left.png')
+megaman_blink_left = pygame.image.load('megaman/megaman_blink_left.png')
+megaman_run_left_0 = pygame.image.load('megaman/megaman_run_left_0.png')
+megaman_run_left_1 = pygame.image.load('megaman/megaman_run_left_1.png')
+megaman_run_left_2 = pygame.image.load('megaman/megaman_run_left_2.png')
 
-megaman_idle_right = pygame.image.load('megaman\megaman_idle_right.png')
-megaman_blink_right = pygame.image.load('megaman\megaman_blink_right.png')
-megaman_run_right_0 = pygame.image.load('megaman\megaman_run_right_0.png')
-megaman_run_right_1 = pygame.image.load('megaman\megaman_run_right_1.png')
-megaman_run_right_2 = pygame.image.load('megaman\megaman_run_right_2.png')
+megaman_idle_right = pygame.image.load('megaman/megaman_idle_right.png')
+megaman_blink_right = pygame.image.load('megaman/megaman_blink_right.png')
+megaman_run_right_0 = pygame.image.load('megaman/megaman_run_right_0.png')
+megaman_run_right_1 = pygame.image.load('megaman/megaman_run_right_1.png')
+megaman_run_right_2 = pygame.image.load('megaman/megaman_run_right_2.png')
+
 # Define new dimensions for the character image
 walk_width = 216  # Set the desired width
 walk_height = 108  # Set the desired height
@@ -54,7 +55,6 @@ girl_walk_left_1 = pygame.transform.scale(girl_walk_left_1, (walk_width, walk_he
 girl_walk_left_2 = pygame.transform.scale(girl_walk_left_2, (walk_width, walk_height))
 girl_walk_right_1 = pygame.transform.scale(girl_walk_right_1, (walk_width, walk_height))
 girl_walk_right_2 = pygame.transform.scale(girl_walk_right_2, (walk_width, walk_height))
-# character_image = pygame.transform.scale(girl_walk_left_lu, (walk_width, walk_height))
 
 # Define the layout of the area
 layout = [
@@ -82,10 +82,8 @@ layout = [
     [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
     [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
     [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
     [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
 ]
-
 
 # Function to draw the map
 def draw_map():
@@ -98,8 +96,6 @@ def draw_map():
                 window.blit(lpink_tile, (x * tile_size, y * tile_size))
             elif tile == 3:
                 window.blit(dpink_tile, (x * tile_size, y * tile_size))
-
-
 
 class Character:
     def __init__(self, x, y, speed=3, size=30, health=3):
@@ -119,6 +115,10 @@ class Character:
         self.right_frames = [girl_walk_right_1, girl_walk_right_2, girl_walk_right_1, girl_walk_right_2]
         self.current_frame = 0
         self.walking = False
+
+        self.invincible = False  # Whether the character is invincible
+        self.invincible_time = 0  # Time at which the character became invincible
+        self.invincible_duration = 3000  # Duration of invincibility in milliseconds
 
     def move(self, keys):
         self.walking = False
@@ -156,14 +156,22 @@ class Character:
 
         # Update animation frames
         self.update_animation()
-   
-   
+
+        # Check invincibility duration
+        if self.invincible and pygame.time.get_ticks() - self.invincible_time > self.invincible_duration:
+            self.invincible = False
+
     def take_damage(self, damage):
-        self.health -= damage
-        if(self.health<0):
-            character.die()
+        if not self.invincible:
+            self.health -= damage
+            if self.health <= 0:
+                self.die()
+            else:
+                self.invincible = True
+                self.invincible_time = pygame.time.get_ticks()
 
-
+    def die(self):
+        print("Character has died.")
 
     def update_animation(self):
         now = pygame.time.get_ticks()
@@ -179,10 +187,11 @@ class Character:
 character = Character(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
 
 class Monster:
-    def __init__(self, x, y, size, attack_power):
+    def __init__(self, x, y, size, attack_power=1):
         self.x = x
         self.y = y
         self.size = size
+        self.attack_power = attack_power
         self.image = pygame.transform.scale(monster_image, (size, size))
         self.dx, self.dy = 0, 0
         self.angle = random.uniform(0, 2 * math.pi)
@@ -223,28 +232,38 @@ monsters = [Monster(random.randint(0, WINDOW_WIDTH), random.randint(0, WINDOW_HE
 running = True
 clock = pygame.time.Clock()
 while running:
-    window.fill(WHITE)
-    draw_map()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
     keys = pygame.key.get_pressed()
     character.move(keys)
-    character.draw()
 
-    distance = math.sqrt((monster.x - character.x) ** 2 + (monster.y - character.y) ** 2)
-
-    if distance < 10:
-        monster.attack(character)
-        print(f"Character health: {character.health}")
-    for mon in monsters:
-        mon.move_towards_player(character, monsters)  
-        mon.draw()
+    if character.health > 0:
+        window.fill(WHITE)
+        draw_map()
+        character.draw()
+        
+        for mon in monsters:
+            mon.move_towards_player(character, monsters)
+            mon.draw()
+            
+            # Calculate distance between the monster and the character
+            distance = math.sqrt((mon.x - character.x) ** 2 + (mon.y - character.y) ** 2)
+            
+            # If distance is less than a certain value, the character takes damage
+            if distance < 50:  # Adjust this value as needed
+                mon.attack(character)
+                print(f"Character health: {character.health}")
+    else:
+        # Draw black screen and "DIED" text
+        window.fill(BLACK)
+        font = pygame.font.Font(pygame.font.get_default_font(), 74)  # You can change the font here if needed
+        text = font.render("FAILED", True, (255, 0, 0))  # Red color for "DIED"
+        text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+        window.blit(text, text_rect)
 
     pygame.display.flip()
     clock.tick(FPS)
-    if character.health <= 0:
-        running = false
 
 pygame.quit()

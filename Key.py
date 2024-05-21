@@ -1,0 +1,1 @@
+GORQ_API_KEY = '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'

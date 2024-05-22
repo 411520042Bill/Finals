@@ -2,7 +2,7 @@ import pygame
 import random
 import math
 import time
-from chatbot import get_chatbot_response  # Import the chatbot function
+from chatbot import get_chatbot_response
 
 # Initialize Pygame
 pygame.init()
@@ -44,6 +44,8 @@ diddy_idle = pygame.image.load('Diddy/Diddy.png')
 diddy_gun = pygame.image.load('Diddy/Diddy_gun.png')
 diddy_left_up = pygame.image.load('Diddy/Diddy_lup.png')
 diddy_right_up = pygame.image.load('Diddy/Diddy_rup.png')
+heart = pygame.image.load('heart.png')
+heart_grey = pygame.image.load('heart_grey.png')
 pause_icon = pygame.image.load('pause_icon.png')
 resume_icon = pygame.image.load('resume_icon.png')
 
@@ -68,7 +70,6 @@ layout = [
     [3, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
     [3, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
     [3, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
     [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
     [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
     [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
@@ -115,6 +116,8 @@ class Character:
         self.invincible, self.invincible_time = False, 0
         self.invincible_duration, self.flash_time = 3000, 100
         self.visible = True
+        self.heart_image = pygame.transform.scale(heart, (30, 30))
+        self.heart_grey_image = pygame.transform.scale(heart_grey, (30, 30))
 
     def adjust_speed(self, is_creepy_active):
         self.speed = self.base_speed * 0.5 if is_creepy_active else self.base_speed
@@ -176,6 +179,14 @@ class Character:
     def draw(self):
         if self.visible or not self.invincible:
             window.blit(self.image, self.rect.topleft)
+        self.draw_health()
+
+    def draw_health(self):
+        for i in range(3):
+            if i < self.health:
+                window.blit(self.heart_image, (455 + i * 40, 10))
+            else:
+                window.blit(self.heart_grey_image, (455 + i * 40, 10))
 
 character = Character(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
 
@@ -288,39 +299,61 @@ input_font = pygame.font.Font(None, 24)  # Smaller font for input bar
 
 def draw_pause_button():
     icon = resume_icon if paused else pause_icon
-    window.blit(icon, (10, 10))
+    window.blit(icon, (-5, -5))
     return pygame.Rect(10, 10, icon.get_width(), icon.get_height())
 
 def draw_pause_screen():
+    global scroll_y, max_scroll
     window.fill((189, 252, 201))
     text = pygame.font.Font(None, 74).render("Paused", True, BLACK)
     window.blit(text, text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - 150)))
-    pygame.draw.rect(window, CHAT_BG_COLOR, chat_history_rect)
     pygame.draw.rect(window, WHITE, input_box)
+    pygame.draw.rect(window, CHAT_BG_COLOR, chat_history_rect)
     chat_surface = pygame.Surface((chat_history_rect.width, chat_history_rect.height))
     chat_surface.fill(CHAT_BG_COLOR)
-    for i, (user, bot) in enumerate(chat_history):
+    y_offset = -scroll_y
+
+    content_height = 0
+    for user, bot in chat_history:
         user_text_lines = wrap_text(f'You: {user}', font_small, chat_history_rect.width - 20)
         bot_text_lines = wrap_text(f'Bot: {bot}', font_small, chat_history_rect.width - 20)
-        y_offset = chat_history_rect.height - 30 * (2 * i + 1) + scroll_y
+        for line in user_text_lines + bot_text_lines:
+            content_height += font_small.size(line)[1] * 1.5
+        content_height += 20
+
+    max_scroll = max(0, content_height - chat_history_rect.height)
+    y_offset = -scroll_y
+
+    for i, (user, bot) in enumerate(reversed(chat_history)):
+        user_text_lines = wrap_text(f'You: {user}', font_small, chat_history_rect.width - 20)
+        bot_text_lines = wrap_text(f'Bot: {bot}', font_small, chat_history_rect.width - 20)
         for line in user_text_lines:
             user_text = font_small.render(line, True, BLACK)
-            user_text_rect = user_text.get_rect(topright=(chat_history_rect.width - 10, y_offset))
+            user_text_rect = user_text.get_rect(topleft=(10, y_offset))
             chat_surface.blit(user_text, user_text_rect)
             y_offset += user_text.get_height()
-        y_offset += 5  # Small gap between user and bot messages
+        y_offset += 5
         for line in bot_text_lines:
             bot_text = font_small.render(line, True, BLACK)
             bot_text_rect = bot_text.get_rect(topleft=(10, y_offset))
             chat_surface.blit(bot_text, bot_text_rect)
             y_offset += bot_text.get_height()
+        y_offset += 20
+
     window.blit(chat_surface, chat_history_rect.topleft)
+
+    if max_scroll > 0:
+        scrollbar_height = chat_history_rect.height * chat_history_rect.height / content_height
+        scrollbar_rect = pygame.Rect(chat_history_rect.right + 5, chat_history_rect.top + (scroll_y * chat_history_rect.height / content_height), 15, scrollbar_height)
+        pygame.draw.rect(window, BLACK, scrollbar_rect)
+
     txt_surface = input_font.render(input_text, True, BLACK)
     window.blit(txt_surface, (input_box.x + 5, input_box.y + 5))
     if input_active:
         cursor = pygame.Rect(input_box.x + 5 + input_font.size(input_text)[0], input_box.y + 5, 2, input_font.size(input_text)[1])
         if cursor_visible:
             pygame.draw.rect(window, BLACK, cursor)
+
 
 def wrap_text(text, font, max_width):
     """Wrap text into a list of lines that fit within max_width."""
@@ -340,6 +373,7 @@ def wrap_text(text, font, max_width):
 def draw_countdown(number):
     text = pygame.font.Font(None, 74).render(str(number), True, BLACK)
     window.blit(text, text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)))
+
 
 running = True
 clock = pygame.time.Clock()

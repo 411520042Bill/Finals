@@ -411,6 +411,11 @@ while running:
                     input_text = input_text[:-1]
                 else:
                     input_text += event.unicode
+            elif event.key == pygame.K_p:
+                if paused:
+                    paused = False
+                else:
+                    paused = True
 
     if pygame.time.get_ticks() - cursor_blink_time > 500:
         cursor_visible = not cursor_visible

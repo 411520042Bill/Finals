@@ -116,6 +116,7 @@ class Character:
         self.invincible, self.invincible_time = False, 0
         self.invincible_duration, self.flash_time = 3000, 100
         self.visible = True
+        self.alive = Ture
         self.heart_image = pygame.transform.scale(heart, (30, 30))
         self.heart_grey_image = pygame.transform.scale(heart_grey, (30, 30))
 
@@ -163,6 +164,7 @@ class Character:
                 self.visible = True
 
     def die(self):
+        self.alive = False
         print("Character has died.")
 
     def update_animation(self):
@@ -298,9 +300,10 @@ input_font = pygame.font.Font(None, 24)  # Smaller font for input bar
 
 
 def draw_pause_button():
-    icon = resume_icon if paused else pause_icon
-    window.blit(icon, (-5, -5))
-    return pygame.Rect(10, 10, icon.get_width(), icon.get_height())
+    if character.alive:
+        icon = resume_icon if paused else pause_icon
+        window.blit(icon, (-5, -5))
+        return pygame.Rect(10, 10, icon.get_width(), icon.get_height())
 
 def draw_pause_screen():
     global scroll_y, max_scroll

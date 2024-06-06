@@ -30,6 +30,7 @@ CHAT_BG_COLOR = (204, 255, 204)  # Light green color for chat history section
 white_tile = pygame.image.load('_white_tile1.jpg')
 lpink_tile = pygame.image.load('light_pink_tile1.jpg')
 dpink_tile = pygame.image.load('dark_pink_tile1.jpg')
+brown_tile = pygame.image.load('brown_tile.jpg')
 girl_idle_left = pygame.image.load('girl/girl_idle_left.png')
 girl_idle_right = pygame.image.load('girl/girl_idle_right.png')
 girl_walk_left_1 = pygame.image.load('girl/girl_walk_left_1.png')
@@ -48,12 +49,18 @@ heart = pygame.image.load('heart.png')
 heart_grey = pygame.image.load('heart_grey.png')
 pause_icon = pygame.image.load('pause_icon.png')
 resume_icon = pygame.image.load('resume_icon.png')
+desk1 = pygame.image.load('desk/table_tile_1.png')
+desk2 = pygame.image.load('desk/table_tile_2.png')
+desk3 = pygame.image.load('desk/table_tile_3.png')
+chair = pygame.image.load('chair (2).png')
+chair = pygame.image.load('desk/new_chair_resized.png')
 
-# Resize the icons
+# Resize the objects
 pause_icon = pygame.transform.scale(pause_icon, (60, 60))
 resume_icon = pygame.transform.scale(resume_icon, (60, 60))
 
 # Define new dimensions for the character image
+tile_size = white_tile.get_width()
 char_width, char_height = 216, 108
 walk_width, walk_height = 216, 108
 girl_idle_left = pygame.transform.scale(girl_idle_left, (char_width, char_height))
@@ -64,29 +71,29 @@ girl_walk_right_1 = pygame.transform.scale(girl_walk_right_1, (walk_width, walk_
 girl_walk_right_2 = pygame.transform.scale(girl_walk_right_2, (walk_width, walk_height))
 
 # Define the layout of the area
-layout = [
+layout = [#Shelf 10-17
     [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
-    [3, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3],
+    [3, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 3],
+    [3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 3],
+    [3, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 3],
+    [3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 3],
+    [3, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 3],
+    [3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 3],
+    [3, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 3],
+    [3, 0, 2, 7, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 7, 2, 0, 2, 0, 3],
+    [3, 2, 0, 4, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 4, 0, 2, 0, 2, 3],
+    [3, 0, 7, 5, 7, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 7, 5, 7, 0, 2, 0, 3],
+    [3, 2, 0, 6, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 6, 0, 2, 0, 2, 3],
+    [3, 0, 2, 7, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 7, 2, 0, 2, 0, 3],
+    [3, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 3],
+    [3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 3],
+    [3, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 3],
+    [3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 3],
+    [3, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 3],
+    [3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 3],
     [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
 ]
+
 
 # Function to draw the map
 def draw_map():
@@ -99,6 +106,39 @@ def draw_map():
                 window.blit(lpink_tile, (x * tile_size, y * tile_size))
             elif tile == 3:
                 window.blit(dpink_tile, (x * tile_size, y * tile_size))
+            elif tile == 4:
+                window.blit(desk1, (x * tile_size, y * tile_size))
+            elif tile == 5:
+                window.blit(desk2, (x * tile_size, y * tile_size))
+            elif tile == 6:
+                window.blit(desk3, (x * tile_size, y * tile_size))
+            elif tile == 7:
+                window.blit(chair, (x * tile_size, y * tile_size))
+            
+
+def is_colliding(rect, layout, tile_size):
+    for y, row in enumerate(layout):
+        for x, tile in enumerate(row):
+            if tile in (4, 5, 6, 7):  # Only check for desk and chair tiles
+                obstacle_rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
+                # Adjusted smaller collision box
+                collision_box = pygame.Rect(rect.centerx - tile_size // 2, rect.centery - tile_size // 2, tile_size, tile_size)
+                if collision_box.colliderect(obstacle_rect):
+                    return True
+    return False
+
+def is_within_boundary(x, y, layout):
+    if 0 <= y < len(layout) and 0 <= x < len(layout[y]) and layout[y][x] != 3:
+        return True
+    return False
+
+def find_valid_spawn_position(layout, tile_size):
+    valid_positions = []
+    for y, row in enumerate(layout):
+        for x, tile in enumerate(row):
+            if tile != 3:  # Only consider tiles that are not boundary tiles
+                valid_positions.append((x * tile_size, y * tile_size))
+    return random.choice(valid_positions)
 
 class Character:
     def __init__(self, x, y, speed=3, size=30, health=3):
@@ -116,7 +156,7 @@ class Character:
         self.invincible, self.invincible_time = False, 0
         self.invincible_duration, self.flash_time = 3000, 100
         self.visible = True
-        self.alive = Ture
+        self.alive = True
         self.heart_image = pygame.transform.scale(heart, (30, 30))
         self.heart_grey_image = pygame.transform.scale(heart_grey, (30, 30))
 
@@ -140,13 +180,26 @@ class Character:
             length = (dx ** 2 + dy ** 2) ** 0.5
             dx, dy = dx / length, dy / length
             self.image = self.left_frames[self.current_frame] if self.last_direction == 'left' else self.right_frames[self.current_frame]
-        self.x += dx * self.speed
-        self.y += dy * self.speed
+        
+        new_x = self.x + dx * self.speed
+        new_y = self.y + dy * self.speed
+        new_rect = self.rect.copy()
+        new_rect.center = (new_x, new_y)
+        
+        collision_box = pygame.Rect(new_rect.centerx - tile_size // 2, new_rect.centery - tile_size // 2, tile_size, tile_size)
+        tile_x = int(new_rect.centerx // tile_size)
+        tile_y = int(new_rect.centery // tile_size)
+        
+        if is_within_boundary(tile_x, tile_y, layout) and not is_colliding(collision_box, layout, tile_size):
+            self.x, self.y = new_x, new_y
+        
         self.x = max(0, min(self.x, WINDOW_WIDTH - self.size * 2))
         self.y = max(0, min(self.y, WINDOW_HEIGHT - self.size * 2))
         self.rect.center = (self.x, self.y)
+        
         if not self.walking:
             self.image = girl_idle_left if self.last_direction == 'left' else girl_idle_right
+        
         self.update_animation()
         if self.invincible and pygame.time.get_ticks() - self.invincible_time > self.invincible_duration:
             self.invincible = False
@@ -192,6 +245,8 @@ class Character:
 
 character = Character(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
 
+
+
 class Monster:
     def __init__(self, x, y, size, idle_image, creepy_image, left_up_image, right_up_image, dialog_text, attack_power=1):
         self.x, self.y, self.size, self.attack_power = x, y, size, attack_power
@@ -236,8 +291,14 @@ class Monster:
                 self.attack(player)
             else:
                 dx, dy = dx / distance, dy / distance
-                self.rect.centerx += dx * 2.5
-                self.rect.centery += dy * 2.5
+                new_rect = self.rect.copy()
+                new_rect.centerx += dx * 2.5
+                new_rect.centery += dy * 2.5
+                tile_size = white_tile.get_width()
+                tile_x = int(new_rect.centerx // tile_size)
+                tile_y = int(new_rect.centery // tile_size)
+                if is_within_boundary(tile_x, tile_y, layout) and not is_colliding(new_rect, layout, tile_size):
+                    self.rect = new_rect
             self.show_dialog = False
 
     def attack(self, character):
@@ -265,28 +326,26 @@ class Monster:
     def draw(self):
         window.blit(self.image, self.rect.topleft)
 
+
 def is_too_close(monster1, monster2, min_distance=100):
     distance = math.sqrt((monster1.rect.centerx - monster2.rect.centerx) ** 2 + 
                          (monster1.rect.centery - monster2.rect.centery) ** 2)
     return distance < min_distance
 
-potus = Monster(random.randint(0, WINDOW_WIDTH - 30), random.randint(0, WINDOW_HEIGHT - 30), 90,
-                pygame.transform.scale(potus_idle, (90, 90)),
-                pygame.transform.scale(potus_creep, (90, 90)),
-                pygame.transform.scale(potus_left_up, (90, 90)),
-                pygame.transform.scale(potus_right_up, (90, 90)),
-                "I like to lick... Ice cream.")
+def spawn_monster(idle_image, creepy_image, left_up_image, right_up_image, dialog_text, layout, tile_size):
+    x, y = find_valid_spawn_position(layout, tile_size)
+    return Monster(x, y, 90,
+                   pygame.transform.scale(idle_image, (90, 90)),
+                   pygame.transform.scale(creepy_image, (90, 90)),
+                   pygame.transform.scale(left_up_image, (90, 90)),
+                   pygame.transform.scale(right_up_image, (90, 90)),
+                   dialog_text)
 
-while True:
-    diddy_x, diddy_y = random.randint(0, WINDOW_WIDTH - 30), random.randint(0, WINDOW_HEIGHT - 30)
-    diddy = Monster(diddy_x, diddy_y, 90,
-                    pygame.transform.scale(diddy_idle, (90, 90)),
-                    pygame.transform.scale(diddy_gun, (90, 90)),
-                    pygame.transform.scale(diddy_left_up, (90, 90)),
-                    pygame.transform.scale(diddy_right_up, (90, 90)),
-                    "Say! You're a friend of Biber?")
-    if not is_too_close(potus, diddy):
-        break
+# Create monsters
+potus = spawn_monster(potus_idle, potus_creep, potus_left_up, potus_right_up, "I like to lick... Ice cream.", layout, tile_size)
+diddy = spawn_monster(diddy_idle, diddy_gun, diddy_left_up, diddy_right_up, "Say! You're a friend of Biber?", layout, tile_size)
+
+
 
 # Initialize pause state
 paused, countdown, countdown_start_ticks = False, 0, 0

@@ -3,6 +3,7 @@ import random
 import math
 import time
 from utils import is_within_boundary, is_colliding, is_too_close, find_valid_spawn_position, astar_pathfinding
+
 class Monster:
     def __init__(self, x, y, size, idle_image, creepy_image, left_up_image, right_up_image, dialog_text, attack_power=1, attack_range=50):
         self.x, self.y, self.size, self.attack_power = x, y, size, attack_power
@@ -48,9 +49,11 @@ class Monster:
                 self.path = astar_pathfinding(layout, (self.rect.centerx, self.rect.centery), player.rect.center, tile_size)
 
             if self.path:
-                next_step = self.path.pop(0)
+                next_step = self.path[0]
                 dx, dy = next_step[0] - self.rect.centerx, next_step[1] - self.rect.centery
                 distance = math.hypot(dx, dy)
+                if distance < 2:
+                    self.path.pop(0)
                 if distance != 0:
                     dx, dy = dx / distance, dy / distance
                 new_rect = self.rect.copy()

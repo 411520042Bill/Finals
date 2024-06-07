@@ -11,6 +11,10 @@ pygame.init()
 cursor_visible = True
 cursor_blink_time = pygame.time.get_ticks()
 
+# booster spawn
+last_booster_spawn_time = pygame.time.get_ticks()
+booster_spawn_interval = 8000
+
 # Constants for the game window
 WINDOW_WIDTH = 575  # Increased width
 WINDOW_HEIGHT = 505  # Increased height
@@ -30,7 +34,6 @@ CHAT_BG_COLOR = (204, 255, 204)  # Light green color for chat history section
 white_tile = pygame.image.load('_white_tile1.jpg')
 lpink_tile = pygame.image.load('light_pink_tile1.jpg')
 dpink_tile = pygame.image.load('dark_pink_tile1.jpg')
-brown_tile = pygame.image.load('brown_tile.jpg')
 girl_idle_left = pygame.image.load('girl/girl_idle_left.png')
 girl_idle_right = pygame.image.load('girl/girl_idle_right.png')
 girl_walk_left_1 = pygame.image.load('girl/girl_walk_left_1.png')
@@ -45,14 +48,16 @@ diddy_idle = pygame.image.load('Diddy/Diddy.png')
 diddy_gun = pygame.image.load('Diddy/Diddy_gun.png')
 diddy_left_up = pygame.image.load('Diddy/Diddy_lup.png')
 diddy_right_up = pygame.image.load('Diddy/Diddy_rup.png')
-heart = pygame.image.load('heart.png')
-heart_grey = pygame.image.load('heart_grey.png')
+heart = pygame.image.load('prop/heart.png')
+heart_grey = pygame.image.load('prop/heart_grey.png')
 pause_icon = pygame.image.load('pause_icon.png')
 resume_icon = pygame.image.load('resume_icon.png')
-desk1 = pygame.image.load('table_tile_1.png')
-desk2 = pygame.image.load('table_tile_2.png')
-desk3 = pygame.image.load('table_tile_3.png')
+desk = pygame.image.load('prop/desk.png')
 chair = pygame.image.load('new_chair_resized.png')
+ice_cream = pygame.image.load('prop/ice_cream_ball_chocomint.png')
+cone = pygame.image.load('prop/ice_cream_cone.png')
+syringe_red = pygame.image.load('prop/syringe_red.png')
+
 
 # Resize the objects
 pause_icon = pygame.transform.scale(pause_icon, (60, 60))
@@ -69,6 +74,10 @@ girl_walk_left_2 = pygame.transform.scale(girl_walk_left_2, (walk_width, walk_he
 girl_walk_right_1 = pygame.transform.scale(girl_walk_right_1, (walk_width, walk_height))
 girl_walk_right_2 = pygame.transform.scale(girl_walk_right_2, (walk_width, walk_height))
 
+desk_width, desk_height = tile_size, 3 * tile_size
+desk = pygame.transform.scale(desk, (desk_width, desk_height))
+
+
 # Define the layout of the area
 layout = [#Shelf 10-17
     [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
@@ -80,9 +89,9 @@ layout = [#Shelf 10-17
     [3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 3],
     [3, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 3],
     [3, 0, 2, 7, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 7, 2, 0, 2, 0, 3],
+    [3, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 3],
+    [3, 0, 7, 0, 7, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 7, 0, 7, 0, 2, 0, 3],
     [3, 2, 0, 4, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 4, 0, 2, 0, 2, 3],
-    [3, 0, 7, 5, 7, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 7, 5, 7, 0, 2, 0, 3],
-    [3, 2, 0, 6, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 6, 0, 2, 0, 2, 3],
     [3, 0, 2, 7, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 7, 2, 0, 2, 0, 3],
     [3, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 3],
     [3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 3],
@@ -92,7 +101,6 @@ layout = [#Shelf 10-17
     [3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 3],
     [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
 ]
-
 
 # Function to draw the map
 def draw_map():
@@ -105,15 +113,38 @@ def draw_map():
                 window.blit(lpink_tile, (x * tile_size, y * tile_size))
             elif tile == 3:
                 window.blit(dpink_tile, (x * tile_size, y * tile_size))
-            elif tile == 4:
-                window.blit(desk1, (x * tile_size, y * tile_size))
-            elif tile == 5:
-                window.blit(desk2, (x * tile_size, y * tile_size))
-            elif tile == 6:
-                window.blit(desk3, (x * tile_size, y * tile_size))
+            elif tile == 4:  # Place the entire desk image
+                desk_x = x * tile_size
+                desk_y = y * tile_size - desk_height + tile_size  # Adjust to align with tiles
+                window.blit(desk, (desk_x, desk_y))
             elif tile == 7:
                 window.blit(chair, (x * tile_size, y * tile_size))
-            
+
+def spawn_random_booster():
+    booster_types = [8, 9, 10]  # Ice cream, cone, syrup
+    booster_type = random.choice(booster_types)
+    empty_tiles = [(x, y) for y, row in enumerate(layout) for x, tile in enumerate(row) if tile == 0]
+    
+    if empty_tiles:
+        x, y = random.choice(empty_tiles)
+        layout[y][x] = booster_type
+        
+def check_boost(character):
+    for y, row in enumerate(layout):
+        for x, tile in enumerate(row):
+            if tile in (8, 9, 10):
+                object_rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
+                if character.rect.colliderect(object_rect):
+                    if tile == 8:  # Ice cream
+                        character.speed += 1  # Increase speed
+                        layout[y][x] = 0  # Remove the object from the map
+                    elif tile == 9:  # Cone
+                        character.health += 1  # Increase health
+                        layout[y][x] = 0  # Remove the object from the map
+                    elif tile == 10:  # Syrup
+                        character.speed += 1  # Increase speed
+                        layout[y][x] = 0  # Remove the object from the map
+
 
 def is_colliding(rect, layout, tile_size):
     for y, row in enumerate(layout):
@@ -488,6 +519,14 @@ while running:
         else:
             character.adjust_speed(potus.creepy_active or diddy.creepy_active)
             character.move(keys)
+            check_boost(character)  # Check for boost items
+            
+            # Spawn booster if interval has passed
+            current_time = pygame.time.get_ticks()
+            if current_time - last_booster_spawn_time > booster_spawn_interval:
+                spawn_random_booster()
+                last_booster_spawn_time = current_time
+            
             if character.health > 0:
                 character.draw()
                 potus.move_towards_player(character, diddy)

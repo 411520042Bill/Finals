@@ -1,16 +1,22 @@
 import pygame
-from utils import is_within_boundary, is_colliding
+from utils import is_colliding, is_within_boundary
 
 class Character:
-    def __init__(self, x, y, speed=3, size=30, health=3):
+    def __init__(self, x, y, width=216, height=108, speed=3, size=30, health=3):
         self.x, self.y = x, y
+        self.width, self.height = width, height
         self.base_speed, self.speed = speed, speed
         self.size, self.health = size, health
-        self.load_images()
+        self.image = pygame.image.load('girl/girl_idle_left.png')
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))  # Scale the character image
         self.rect = self.image.get_rect(center=(x, y))
         self.last_update = pygame.time.get_ticks()
         self.frame_rate = 100
         self.last_direction = 'left'
+        self.left_frames = [pygame.image.load('girl/girl_walk_left_1.png'), pygame.image.load('girl/girl_walk_left_2.png')] * 2
+        self.right_frames = [pygame.image.load('girl/girl_walk_right_1.png'), pygame.image.load('girl/girl_walk_right_2.png')] * 2
+        self.left_frames = [pygame.transform.scale(frame, (self.width, self.height)) for frame in self.left_frames]
+        self.right_frames = [pygame.transform.scale(frame, (self.width, self.height)) for frame in self.right_frames]
         self.current_frame, self.walking = 0, False
         self.invincible, self.invincible_time = False, 0
         self.invincible_duration, self.flash_time = 3000, 100
@@ -18,23 +24,6 @@ class Character:
         self.alive = True
         self.heart_image = pygame.transform.scale(pygame.image.load('prop/heart.png'), (30, 30))
         self.heart_grey_image = pygame.transform.scale(pygame.image.load('prop/heart_grey.png'), (30, 30))
-
-    def load_images(self):
-        char_width, char_height = 216, 108
-        walk_width, walk_height = 216, 108
-        self.image = pygame.transform.scale(pygame.image.load('girl/girl_idle_left.png'), (char_width, char_height))
-        self.idle_images = {
-            'left': pygame.transform.scale(pygame.image.load('girl/girl_idle_left.png'), (char_width, char_height)),
-            'right': pygame.transform.scale(pygame.image.load('girl/girl_idle_right.png'), (char_width, char_height))
-        }
-        self.left_frames = [
-            pygame.transform.scale(pygame.image.load('girl/girl_walk_left_1.png'), (walk_width, walk_height)),
-            pygame.transform.scale(pygame.image.load('girl/girl_walk_left_2.png'), (walk_width, walk_height))
-        ] * 2
-        self.right_frames = [
-            pygame.transform.scale(pygame.image.load('girl/girl_walk_right_1.png'), (walk_width, walk_height)),
-            pygame.transform.scale(pygame.image.load('girl/girl_walk_right_2.png'), (walk_width, walk_height))
-        ] * 2
 
     def adjust_speed(self, is_creepy_active):
         self.speed = self.base_speed * 0.5 if is_creepy_active else self.base_speed
@@ -74,7 +63,8 @@ class Character:
         self.rect.center = (self.x, self.y)
 
         if not self.walking:
-            self.image = self.idle_images['left'] if self.last_direction == 'left' else self.idle_images['right']
+            self.image = pygame.image.load('girl/girl_idle_left.png') if self.last_direction == 'left' else pygame.image.load('girl/girl_idle_right.png')
+            self.image = pygame.transform.scale(self.image, (self.width, self.height))  # Scale the idle image
 
         self.update_animation()
         if self.invincible and pygame.time.get_ticks() - self.invincible_time > self.invincible_duration:

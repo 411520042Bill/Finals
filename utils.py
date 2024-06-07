@@ -41,7 +41,6 @@ def astar_pathfinding(layout, start, goal, tile_size):
 
     return []
 
-
 def draw_map(window, layout, white_tile, lpink_tile, dpink_tile, desk, chair, tile_size):
     for y, row in enumerate(layout):
         for x, tile in enumerate(row):
@@ -142,37 +141,15 @@ def is_within_boundary(x, y, layout):
 def is_colliding(rect, layout, tile_size):
     for y, row in enumerate(layout):
         for x, tile in enumerate(row):
-            if tile in (4, 5, 6, 7):
+            if tile in (3, 4, 5, 6, 7):  # Only check for specific obstacle tiles
                 obstacle_rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
+                # Adjusted smaller collision box
                 collision_box = pygame.Rect(rect.centerx - tile_size // 2, rect.centery - tile_size // 2, tile_size, tile_size)
                 if collision_box.colliderect(obstacle_rect):
+                    print(f"Collision detected at: {x}, {y}")  # Debugging line
                     return True
     return False
 
-def check_boost(character, layout, tile_size):
-    for y, row in enumerate(layout):
-        for x, tile in enumerate(row):
-            if tile in (8, 9, 10):
-                object_rect = pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size)
-                if character.rect.colliderect(object_rect):
-                    if tile == 8:
-                        character.speed += 1
-                        layout[y][x] = 0
-                    elif tile == 9:
-                        character.health += 1
-                        layout[y][x] = 0
-                    elif tile == 10:
-                        character.speed += 1
-                        layout[y][x] = 0
-
-def spawn_random_booster(layout):
-    booster_types = [8, 9, 10]
-    booster_type = random.choice(booster_types)
-    empty_tiles = [(x, y) for y, row in enumerate(layout) for x, tile in enumerate(row) if tile == 0]
-
-    if empty_tiles:
-        x, y = random.choice(empty_tiles)
-        layout[y][x] = booster_type
 
 def is_too_close(monster1, monster2, min_distance=100):
     distance = math.sqrt((monster1.rect.centerx - monster2.rect.centerx) ** 2 +
@@ -186,3 +163,4 @@ def find_valid_spawn_position(layout, tile_size):
             if tile != 3:
                 valid_positions.append((x * tile_size, y * tile_size))
     return random.choice(valid_positions)
+

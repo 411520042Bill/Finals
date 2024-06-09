@@ -1,3 +1,4 @@
+# character.py
 import pygame
 from utils import is_colliding, is_within_boundary
 
@@ -24,6 +25,7 @@ class Character:
         self.alive = True
         self.heart_image = pygame.transform.scale(pygame.image.load('prop/heart.png'), (30, 30))
         self.heart_grey_image = pygame.transform.scale(pygame.image.load('prop/heart_grey.png'), (30, 30))
+        self.is_slow = False
 
     def adjust_speed(self, is_creepy_active):
         self.speed = self.base_speed * 0.5 if is_creepy_active else self.base_speed
@@ -108,3 +110,4 @@ class Character:
                 window.blit(self.heart_image, (455 + i * 40, 10))
             else:
                 window.blit(self.heart_grey_image, (455 + i * 40, 10))
++ i * 40, 10))

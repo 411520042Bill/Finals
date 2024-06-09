@@ -3,44 +3,6 @@ import random
 import math
 import heapq
 
-def astar_pathfinding(layout, start, goal, tile_size):
-    def heuristic(a, b):
-        return abs(a[0] - b[0]) + abs(a[1] - b[1])
-
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-    start_tile = (start[0] // tile_size, start[1] // tile_size)
-    goal_tile = (goal[0] // tile_size, goal[1] // tile_size)
-
-    open_set = []
-    heapq.heappush(open_set, (0, start_tile))
-    came_from = {}
-    g_score = {start_tile: 0}
-    f_score = {start_tile: heuristic(start_tile, goal_tile)}
-
-    while open_set:
-        _, current = heapq.heappop(open_set)
-
-        if current == goal_tile:
-            path = []
-            while current in came_from:
-                path.append((current[0] * tile_size, current[1] * tile_size))
-                current = came_from[current]
-            path.reverse()
-            return path
-
-        for direction in directions:
-            neighbor = (current[0] + direction[0], current[1] + direction[1])
-            if 0 <= neighbor[1] < len(layout) and 0 <= neighbor[0] < len(layout[0]) and layout[neighbor[1]][neighbor[0]] != 3:
-                tentative_g_score = g_score.get(current, float('inf')) + 1
-                if tentative_g_score < g_score.get(neighbor, float('inf')):
-                    came_from[neighbor] = current
-                    g_score[neighbor] = tentative_g_score
-                    f_score[neighbor] = tentative_g_score + heuristic(neighbor, goal_tile)
-                    if neighbor not in [i[1] for i in open_set]:
-                        heapq.heappush(open_set, (f_score[neighbor], neighbor))
-
-    return []
-
 def draw_map(window, layout, white_tile, lpink_tile, dpink_tile, desk, chair, tile_size):
     for y, row in enumerate(layout):
         for x, tile in enumerate(row):
@@ -163,4 +125,3 @@ def find_valid_spawn_position(layout, tile_size):
             if tile != 3:
                 valid_positions.append((x * tile_size, y * tile_size))
     return random.choice(valid_positions)
-

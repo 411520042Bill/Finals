@@ -1,13 +1,11 @@
 import pygame
 import random
-import math
 import time
 from character import Character
 from monster import spawn_monster
 from utils import (
     draw_map, draw_pause_button, draw_pause_screen,
     draw_countdown, is_within_boundary, is_colliding,
-    astar_pathfinding
 )
 from chatbot import get_chatbot_response
 
@@ -214,11 +212,16 @@ class Game:
         for y, row in enumerate(self.layout):
             for x, tile in enumerate(row):
                 if tile in (8, 9, 10):
-                    object_rect = pygame.Rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size)
-                    if self.character.rect.colliderect(object_rect):
+                    pickup_rect = pygame.Rect(
+                        x * self.tile_size + self.tile_size // 4,
+                        y * self.tile_size + self.tile_size // 4,
+                        self.tile_size // 2,
+                        self.tile_size // 2
+                    )
+                    if self.character.rect.colliderect(pickup_rect):
                         item_collected = None
                         if tile == 8:  # Red syringe
-                            self.character.speed *= 0.5  # Slow down speed
+                            self.character.adjust_speed(1)  # Slow down speed
                             item_collected = self.syringe_red
                         elif tile == 9:  # Cone
                             self.character.health += 1  # Increase health

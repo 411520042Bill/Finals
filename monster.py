@@ -137,6 +137,17 @@ def astar_pathfinding(layout, start, goal, tile_size):
 
     return []
 
+def find_valid_spawn_position(layout, tile_size):
+    height = len(layout)
+    width = len(layout[0])
+    
+    while True:
+        x = random.randint(1, width - 2)
+        y = random.randint(1, height - 2)
+        
+        if layout[y][x] == 0:
+            return x * tile_size, y * tile_size
+
 def spawn_monster(monster_type, layout, tile_size):
     x, y = find_valid_spawn_position(layout, tile_size)
     if monster_type == 'POTUS':

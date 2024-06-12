@@ -153,4 +153,3 @@ def spawn_monster(monster_type, layout, tile_size):
                        pygame.image.load('Diddy/Diddy_lup.png'),
                        pygame.image.load('Diddy/Diddy_rup.png'),
                        "Say! You're a friend of Biber?")
-

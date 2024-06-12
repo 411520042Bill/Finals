@@ -108,7 +108,7 @@ def is_colliding(rect, layout, tile_size):
                 # Adjusted smaller collision box
                 collision_box = pygame.Rect(rect.centerx - tile_size // 2, rect.centery - tile_size // 2, tile_size, tile_size)
                 if collision_box.colliderect(obstacle_rect):
-                    print(f"Collision detected at: {x}, {y}")  # Debugging line
+                    # print(f"Collision detected at: {x}, {y}")  # Debugging line
                     return True
     return False
 
@@ -122,6 +122,6 @@ def find_valid_spawn_position(layout, tile_size):
     valid_positions = []
     for y, row in enumerate(layout):
         for x, tile in enumerate(row):
-            if tile != 3:
+            if tile == 0 or tile == 2:
                 valid_positions.append((x * tile_size, y * tile_size))
     return random.choice(valid_positions)

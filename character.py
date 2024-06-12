@@ -26,9 +26,15 @@ class Character:
         self.heart_image = pygame.transform.scale(pygame.image.load('prop/heart.png'), (30, 30))
         self.heart_grey_image = pygame.transform.scale(pygame.image.load('prop/heart_grey.png'), (30, 30))
         self.is_slow = False
+        self.ice_cream_collected = 0
 
-    def adjust_speed(self, is_creepy_active):
-        self.speed = self.base_speed * 0.5 if is_creepy_active else self.base_speed
+    def adjust_speed(self, is_creepy_active, is_slow):
+        if is_creepy_active and is_slow:
+            self.speed = self.base_speed * 0.5
+        elif not is_creepy_active and not is_slow:
+            self.speed = self.base_speed
+        elif is_creepy_active or is_slow:
+            self.speed = self.base_speed * 0.75
 
     def move(self, keys, layout, tile_size, window_width, window_height):
         self.walking, dx, dy = False, 0, 0
@@ -110,4 +116,3 @@ class Character:
                 window.blit(self.heart_image, (455 + i * 40, 10))
             else:
                 window.blit(self.heart_grey_image, (455 + i * 40, 10))
-+ i * 40, 10))

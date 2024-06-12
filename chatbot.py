@@ -9,12 +9,17 @@ def get_chatbot_response(user_input):
     # Proprietary data
     proprietary_data = """The following is relevent information the user might ask, don't use any of it if the user didn't ask about it. [
     What is your name?
-    - My name is justice, I'm a LLM to help you understand this game.
+    - My name is justice, I'm a LLM augumented with relevent data to help you understand this game.
 
     Game winning condition:
     - To collect 10 ice cream balls that randomly appears across the map through time.
     - To avoid to not get harassed by the other customers.
     - If you get harassed by the customers more than 3 times, you lose.
+
+    Objects:
+    - Syringes: These seem to be dropped by the other customers and have negative effects on the human body. Be aware.
+    - Cones: Cones are the foundation of a good ice cream. It seems to cure the little girl's terrified heart.
+    - Ice cream balls: Eating ice cream balls is the reason that the little girl comes to the store. Finish 10 balls and the game will be finished!
 
     How to move the character?
     - Use the up down left right key, you can use two at the same time (Up and right, down and left, etc.)

@@ -5,7 +5,7 @@ from character import Character
 from monster import spawn_monster
 from utils import (
     draw_map, draw_pause_button, draw_pause_screen,
-    draw_countdown, is_within_boundary, is_colliding,
+    draw_countdown, find_valid_spawn_position, is_colliding,
 )
 from chatbot import get_chatbot_response
 
@@ -38,6 +38,8 @@ class Game:
         self.input_font = pygame.font.Font(None, 24)
         self.collected_items = []
         self.ice_cream_present = False  # Track if Ice Cream is present
+        self.slow_down_timer = 0
+        self.slow_down_start_time = 0
 
         # Load images and other resources
         self.load_resources()
@@ -53,7 +55,7 @@ class Game:
         self.load_boosters()
 
     def load_resources(self):
-        # Load images and other resources here
+        # Load images and other resources
         self.white_tile = pygame.image.load('_white_tile1.jpg')
         self.tile_size = self.white_tile.get_width()
         self.lpink_tile = pygame.image.load('light_pink_tile1.jpg')
@@ -72,9 +74,7 @@ class Game:
         self.syringe_red = pygame.image.load('prop/syringe_red.png')
         self.syringe_red = pygame.transform.scale(self.syringe_red, (self.tile_size, self.tile_size))
 
-        # 3: chair, 4: desk, 
         self.layout = [
-            # Shelf 10-17
             [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
             [3, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 3],
             [3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 3],
@@ -109,7 +109,7 @@ class Game:
             empty_tiles = [(x, y) for y, row in enumerate(self.layout) for x, tile in enumerate(row) if tile == 0]
             if empty_tiles:
                 x, y = random.choice(empty_tiles)
-                self.layout[y][x] = 10  # Ice cream type is 10
+                self.layout[y][x] = 10
                 self.ice_cream_present = True
 
     def handle_events(self):
@@ -154,15 +154,21 @@ class Game:
                     self.countdown -= 1
                     self.countdown_start_ticks = pygame.time.get_ticks()
             else:
-                self.character.adjust_speed(self.potus.creepy_active or self.diddy.creepy_active)
+                # Check slow down timer
+                if self.slow_down_timer > 0:
+                    elapsed_time = pygame.time.get_ticks() - self.slow_down_start_time
+                    if elapsed_time >= 3000:
+                        self.slow_down_timer = 0
+                        self.character.adjust_speed(self.potus.creepy_active or self.diddy.creepy_active, False)  # Return to normal speed
+                print(f"speed: {self.character.speed}")
                 keys = pygame.key.get_pressed()
                 self.character.move(keys, self.layout, self.tile_size, self.width, self.height)
-                self.check_boost_collision()  # Check for booster collisions
+                self.check_boost_collision()
                 current_time = pygame.time.get_ticks()
                 if current_time - self.last_booster_spawn_time > self.booster_spawn_interval:
                     self.spawn_random_booster()
                     self.last_booster_spawn_time = current_time
-                self.ensure_ice_cream()  # Ensure there is always one ice cream on the map
+                self.ensure_ice_cream()
                 if self.character.health > 0:
                     self.potus.move_towards_player(self.character, self.diddy, self.layout, self.tile_size)
                     self.diddy.move_towards_player(self.character, self.potus, self.layout, self.tile_size)
@@ -170,6 +176,7 @@ class Game:
                         self.potus.attack(self.character)
                     if self.character.rect.colliderect(self.diddy.rect):
                         self.diddy.attack(self.character)
+
 
     def draw(self):
         self.window.fill((255, 255, 255))
@@ -185,20 +192,41 @@ class Game:
                     self.diddy.draw(self.window)
                     self.diddy.draw_dialog(self.window)
                     self.draw_boosters()
-                    self.draw_collected_items()  # Draw collected items
+                    self.draw_collected_items()
+                    self.draw_ice_cream()
+                    if self.character.ice_cream_collected >= 10:
+                        self.window.fill((255, 255, 153))
+                        text = pygame.font.Font(pygame.font.get_default_font(), 74).render("YOU WIN!!!", True, (204, 204, 0))
+                        self.window.blit(text, text.get_rect(center=(self.width // 2, self.height // 2 - 50)))
+                        self.draw_retry_bar()
                 else:
                     self.window.fill((0, 0, 0))
                     text = pygame.font.Font(pygame.font.get_default_font(), 74).render("FAILED", True, (255, 0, 0))
-                    self.window.blit(text, text.get_rect(center=(self.width // 2, self.height // 2)))
+                    self.window.blit(text, text.get_rect(center=(self.width // 2, self.height // 2 - 50)))
+                    self.draw_retry_bar()
         else:
             self.max_scroll = draw_pause_screen(self.window, self.chat_history, self.input_box, self.chat_history_rect, self.input_font, self.input_text, self.input_active, self.cursor_visible, self.scroll_y, self.max_scroll, self.font_small)
         self.pause_rect = draw_pause_button(self.window, self.character, self.paused, self.resume_icon, self.pause_icon)
         pygame.display.flip()
 
+    def draw_retry_bar(self):
+        retry_bar_height = 30  # Adjust the height of the retry bar
+        retry_bar = pygame.Surface((self.width // 2, retry_bar_height))  # Create a new surface with half the width of the window and the adjusted height
+        retry_bar.set_alpha(128)  # Set the alpha value for the surface (0-255, 255 is opaque)
+        retry_bar.fill((128, 128, 128))  # Fill the surface with a grey color (RGB)
+        self.window.blit(retry_bar, (self.width // 4, self.height // 2 - retry_bar_height // 2))  # Draw the surface at the center of the window
+
+        retry_text = pygame.font.Font(pygame.font.get_default_font(), 24).render("Retry", True, (255, 255, 255))  # Create a text surface object with a smaller font size
+        self.window.blit(retry_text, (self.width // 2 - retry_text.get_width() // 2, self.height // 2 - retry_text.get_height() // 2))
+    
     def draw_collected_items(self):
-        start_x = 480  # Start drawing under the health bar
-        for i, item_image in enumerate(self.collected_items):
-            self.window.blit(item_image, (410 + i * (self.tile_size + 10), 480))  # Draw item images
+       for i, item_image in enumerate(self.collected_items):
+            self.window.blit(item_image, (410 + i * (self.tile_size + 10), 480))
+
+    def draw_ice_cream(self):
+        self.window.blit(self.ice_cream, (20, 470))
+        text = self.font.render('x ' + str(self.character.ice_cream_collected), True, (0, 0, 0))
+        self.window.blit(text, (60, 475))
 
     def draw_boosters(self):
         for y, row in enumerate(self.layout):
@@ -213,24 +241,27 @@ class Game:
             for x, tile in enumerate(row):
                 if tile in (8, 9, 10):
                     pickup_rect = pygame.Rect(
-                        x * self.tile_size + self.tile_size // 4,
-                        y * self.tile_size + self.tile_size // 4,
-                        self.tile_size // 2,
-                        self.tile_size // 2
+                        x * self.tile_size + self.tile_size // 50,
+                        y * self.tile_size + self.tile_size // 50,
+                        self.tile_size // 23,
+                        self.tile_size // 23
                     )
                     if self.character.rect.colliderect(pickup_rect):
                         item_collected = None
                         if tile == 8:  # Red syringe
-                            self.character.adjust_speed(1)  # Slow down speed
+                            self.character.adjust_speed(False, True)
+                            self.slow_down_timer = 3000
+                            self.slow_down_start_time = pygame.time.get_ticks()
                             item_collected = self.syringe_red
                         elif tile == 9:  # Cone
-                            self.character.health += 1  # Increase health
+                            if self.character.health < 3:
+                                self.character.health += 1
                             item_collected = self.cone
                         elif tile == 10:  # Ice cream
-                            self.character.speed += 1  # Increase speed
+                            self.character.ice_cream_collected += 1
                             item_collected = self.ice_cream
-                            self.ice_cream_present = False  # Mark ice cream as collected
-                        self.layout[y][x] = 0  # Remove the object from the map
+                            self.ice_cream_present = False 
+                        self.layout[y][x] = 0 
 
                         if item_collected:
                             self.collected_items.append(item_collected)
@@ -238,18 +269,20 @@ class Game:
                                 self.collected_items.pop(0)  # Keep only the last five items
 
     def spawn_random_booster(self):
-        booster_types = [8] * 7 + [9] * 3  # Red syringe (8) has 70% probability, cone (9) has 30% probability
+        x, y = find_valid_spawn_position(self.layout, self.tile_size)
+        x, y = x // self.tile_size, y // self.tile_size
+        booster_types = [8] * 7 + [9] * 3 
         booster_type = random.choice(booster_types)
-        empty_tiles = [(x, y) for y, row in enumerate(self.layout) for x, tile in enumerate(row) if tile == 0]
-
-        if empty_tiles:
-            x, y = random.choice(empty_tiles)
-            self.layout[y][x] = booster_type
+        self.layout[y][x] = booster_type
 
     def run(self):
         self.countdown_start_ticks = pygame.time.get_ticks()  # Start the countdown timer when the game starts
         while self.running:
             self.handle_events()
+            self.update()
+            self.draw()
+            self.clock.tick(self.fps)
+
             self.update()
             self.draw()
             self.clock.tick(self.fps)

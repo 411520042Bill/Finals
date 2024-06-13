@@ -160,7 +160,7 @@ class Game:
                     if elapsed_time >= 3000:
                         self.slow_down_timer = 0
                         self.character.adjust_speed(self.potus.creepy_active or self.diddy.creepy_active, False)  # Return to normal speed
-                print(f"speed: {self.character.speed}")
+                # print(f"speed: {self.character.speed}")
                 keys = pygame.key.get_pressed()
                 self.character.move(keys, self.layout, self.tile_size, self.width, self.height)
                 self.check_boost_collision()
@@ -195,7 +195,7 @@ class Game:
                     self.draw_collected_items()
                     self.draw_ice_cream()
                     if self.character.ice_cream_collected >= 10:
-                        self.character.health += 1000
+                        self.character.health += 10000
                         self.window.fill((255, 255, 153))
                         text = pygame.font.Font(pygame.font.get_default_font(), 74).render("YOU WIN!!!", True, (204, 204, 0))
                         self.window.blit(text, text.get_rect(center=(self.width // 2, self.height // 2 - 50)))

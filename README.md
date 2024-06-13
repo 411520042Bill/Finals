@@ -39,3 +39,11 @@
   - CCU 411520039 企管二 林柏毅
   - CCU 412410038 資工一 楊海
   - CCU 411210002 數學二 郭玉皓
+
+
+## Job division
+- **Credits to**: 
+  - 艾威朋: Game design, character arts design, programming design
+  - 林柏毅: Game design, programming design
+  - 楊海: Game design, item arts design
+  - 郭玉皓: Game design, item arts design

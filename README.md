@@ -34,6 +34,7 @@
   - **AI assistant**: Use the chat section in the pause section to gain access to justice, the AI assistant to help you better understand the game. Click the white bar below the chat window, type in what you want and hit enter. The message will be sent to justice and you'll receive a reply shortly.
 
 ## Acknowledgments
+- **Credits to**: 
   - CCU 411520042 企管二 艾威朋
   - CCU 411520039 企管二 林柏毅
   - CCU 412410038 資工一 楊海
@@ -41,7 +42,6 @@
 
 
 ## Job division
-- **Credits to**: 
   - 艾威朋: Game design, character arts design, programming design
   - 林柏毅: Game design, programming design
   - 楊海: Game design, item arts design

@@ -198,26 +198,25 @@ class Game:
                         self.window.fill((255, 255, 153))
                         text = pygame.font.Font(pygame.font.get_default_font(), 74).render("YOU WIN!!!", True, (204, 204, 0))
                         self.window.blit(text, text.get_rect(center=(self.width // 2, self.height // 2 - 50)))
-                        self.draw_retry_bar()
                 else:
                     self.window.fill((0, 0, 0))
                     text = pygame.font.Font(pygame.font.get_default_font(), 74).render("FAILED", True, (255, 0, 0))
                     self.window.blit(text, text.get_rect(center=(self.width // 2, self.height // 2 - 50)))
-                    self.draw_retry_bar()
+                    # self.draw_retry_bar()
         else:
             self.max_scroll = draw_pause_screen(self.window, self.chat_history, self.input_box, self.chat_history_rect, self.input_font, self.input_text, self.input_active, self.cursor_visible, self.scroll_y, self.max_scroll, self.font_small)
         self.pause_rect = draw_pause_button(self.window, self.character, self.paused, self.resume_icon, self.pause_icon)
         pygame.display.flip()
 
-    def draw_retry_bar(self):
-        retry_bar_height = 30  # Adjust the height of the retry bar
-        retry_bar = pygame.Surface((self.width // 2, retry_bar_height))  # Create a new surface with half the width of the window and the adjusted height
-        retry_bar.set_alpha(128)  # Set the alpha value for the surface (0-255, 255 is opaque)
-        retry_bar.fill((128, 128, 128))  # Fill the surface with a grey color (RGB)
-        self.window.blit(retry_bar, (self.width // 4, self.height // 2 - retry_bar_height // 2))  # Draw the surface at the center of the window
+    # def draw_retry_bar(self):
+    #     retry_bar_height = 30  # Adjust the height of the retry bar
+    #     retry_bar = pygame.Surface((self.width // 2, retry_bar_height))  # Create a new surface with half the width of the window and the adjusted height
+    #     retry_bar.set_alpha(128)  # Set the alpha value for the surface (0-255, 255 is opaque)
+    #     retry_bar.fill((128, 128, 128))  # Fill the surface with a grey color (RGB)
+    #     self.window.blit(retry_bar, (self.width // 4, self.height // 2 - retry_bar_height // 2))  # Draw the surface at the center of the window
 
-        retry_text = pygame.font.Font(pygame.font.get_default_font(), 24).render("Retry", True, (255, 255, 255))  # Create a text surface object with a smaller font size
-        self.window.blit(retry_text, (self.width // 2 - retry_text.get_width() // 2, self.height // 2 - retry_text.get_height() // 2))
+    #     retry_text = pygame.font.Font(pygame.font.get_default_font(), 24).render("Retry", True, (255, 255, 255))  # Create a text surface object with a smaller font size
+    #     self.window.blit(retry_text, (self.width // 2 - retry_text.get_width() // 2, self.height // 2 - retry_text.get_height() // 2))
     
     def draw_collected_items(self):
        for i, item_image in enumerate(self.collected_items):

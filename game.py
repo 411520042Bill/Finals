@@ -195,6 +195,7 @@ class Game:
                     self.draw_collected_items()
                     self.draw_ice_cream()
                     if self.character.ice_cream_collected >= 10:
+                        self.character.health += 1000
                         self.window.fill((255, 255, 153))
                         text = pygame.font.Font(pygame.font.get_default_font(), 74).render("YOU WIN!!!", True, (204, 204, 0))
                         self.window.blit(text, text.get_rect(center=(self.width // 2, self.height // 2 - 50)))
